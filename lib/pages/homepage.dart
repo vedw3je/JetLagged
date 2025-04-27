@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:jetlagged/api/flightlivelocation.dart';
 import 'package:jetlagged/pages/flightnews.dart';
+import 'package:jetlagged/pages/flightsearchpage.dart';
 import 'package:jetlagged/pages/jetpal.dart';
 import 'package:jetlagged/pages/mapscreen.dart';
 import 'package:video_player/video_player.dart';
@@ -57,7 +58,8 @@ class _HomePageState extends State<HomePage> {
 
     try {
       String flightIata = _flightNumberController.text;
-      String result = await fetchFlightInfo("Where is my flight $flightIata?");
+      String result =
+          await fetchFlightInfo("is my flight $flightIata delayed?");
       setState(() {
         flightInfo = result;
       });
@@ -81,6 +83,9 @@ class _HomePageState extends State<HomePage> {
             builder: (context) =>
                 IndiaMapScreen()), // Navigate to IndiaMapScreen
       );
+    } else if (index == 2) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => FlightSearchPage()));
     } else {
       setState(() {
         _selectedIndex = index; // Set the selected index
@@ -161,6 +166,11 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.map),
             label: 'Live Track',
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.flight_takeoff_rounded), label: 'Search FLights')
+
+          ///
+          ///items
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,

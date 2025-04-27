@@ -179,7 +179,7 @@ class _JetPalScreenState extends State<JetPalScreen> {
     _messageController.clear();
 
     try {
-      final uri = Uri.parse('http://192.168.113.99:5002/query');
+      final uri = Uri.parse('http://192.168.0.117:5002/query');
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},

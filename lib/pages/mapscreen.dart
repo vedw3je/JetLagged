@@ -36,21 +36,11 @@ class _IndiaMapScreenState extends State<IndiaMapScreen> {
       Map<String, double>? position =
           await _flightService.fetchLatLong(flightNumber);
 
-      if (position != null) {
-        setState(() {
-          _flightPosition =
-              LatLng(position['latitude']!, position['longitude']!);
-          _mapController.move(_flightPosition!, 10.0);
-        });
-      } else {
-        // Handle the case when no live data is available
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('No live data available for flight $flightNumber.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      setState(() {
+        _flightPosition =
+            LatLng(position!['latitude']!, position['longitude']!);
+        _mapController.move(_flightPosition!, 10.0);
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
