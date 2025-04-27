@@ -11,7 +11,7 @@ import 'flight_delay_api.dart';
 class FlightService {
   final String _baseUrl = 'https://api.aviationstack.com/v1/flights';
 
-  final String _accessKey = 'de6e21c2d71090ac8e0cd0406fb3ccd1';
+  final String _accessKey = 'b5073505445b539d7af74f234672a013';
 
   Future<Map<String, double>?> fetchLatLong(String flightIata) async {
     try {

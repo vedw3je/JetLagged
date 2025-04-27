@@ -19,6 +19,8 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _flightNumberController = TextEditingController();
   bool isLoading = false;
   double? predictedDelay;
+  String? flightInfo;
+  bool isDelayInfoLoading = false;
 
   @override
   void initState() {
@@ -46,6 +48,28 @@ class _HomePageState extends State<HomePage> {
       predictedDelay = delay;
       isLoading = false;
     });
+  }
+
+  void getFlightDetails() async {
+    setState(() {
+      isDelayInfoLoading = true;
+    });
+
+    try {
+      String flightIata = _flightNumberController.text;
+      String result = await fetchFlightInfo("Where is my flight $flightIata?");
+      setState(() {
+        flightInfo = result;
+      });
+    } catch (e) {
+      setState(() {
+        flightInfo = "Could not fetch flight info at the moment";
+      });
+    } finally {
+      setState(() {
+        isDelayInfoLoading = false;
+      });
+    }
   }
 
   void _onItemTapped(int index) {
@@ -249,6 +273,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 onPressed: () {
                   fetchPrediction();
+                  getFlightDetails();
                 },
                 child: const Text(
                   'Predict Arrival Delay',
@@ -262,36 +287,70 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 20),
               if (predictedDelay != null)
                 Container(
-                    padding: const EdgeInsets.all(16.0),
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.blue.withOpacity(0.2),
-                          spreadRadius: 3,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+                  padding: const EdgeInsets.all(16.0),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    child: Text(
-                      predictedDelay != 0.00
-                          ? 'Predicted Arrival Delay for flight ${_flightNumberController.text}: ${predictedDelay!.toStringAsFixed(2)} minutes'
-                          : 'Invalid flight number',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.2),
+                        spreadRadius: 3,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
                       ),
-                      textAlign: TextAlign.center,
-                    )),
+                    ],
+                  ),
+                  child: Text(
+                    predictedDelay != 0.00
+                        ? 'Predicted Arrival Delay for flight ${_flightNumberController.text}: ${predictedDelay!.toStringAsFixed(2)} minutes'
+                        : 'Invalid flight number',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              if (flightInfo != null)
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.2),
+                        spreadRadius: 3,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    flightInfo != null
+                        ? flightInfo!
+                        : 'Could not fetch flight number',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
             ],
           ),
         ),
